@@ -28,46 +28,70 @@ const Gallery: React.FC = () => {
   const galleryRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // GSAP animation for gallery items triggered by Intersection Observer
     const galleryElement = galleryRef.current;
     if (!galleryElement) return;
 
-    // Use GSAP context for safe cleanup
-    const ctx = gsap.context(() => {});
+    // Use GSAP context for safe cleanup and automatic reversion
+    const ctx = gsap.context(() => {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // If the gallery is intersecting the viewport, trigger the animation
-        if (entries[0].isIntersecting) {
-          ctx.add(() => {
-            gsap.from(".gallery-item", {
-              duration: 1,
-              scale: 0.8,
-              y: 40,
-              rotationX: -20,
-              opacity: 0,
-              stagger: 0.1,
-              ease: "power3.out",
-            });
-          });
-          // Animate only once, then disconnect the observer
-          observer.disconnect();
-        }
-      },
-      {
-        // This margin effectively makes the trigger point when the gallery is 80% down the viewport, similar to `start: "top 80%"`
-        rootMargin: "0px 0px -20% 0px",
-        threshold: 0,
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            if (prefersReducedMotion) {
+              // Accessible, simple fade-in animation
+              gsap.from(".gallery-item", {
+                duration: 1.2,
+                autoAlpha: 0, // Fades in and handles visibility
+                stagger: 0.15,
+                ease: "power2.out",
+              });
+            } else {
+              // Enhanced 3D animation with bloom effect
+              // Animate the container for the 3D effect
+              gsap.from(".gallery-item", {
+                duration: 1.2,
+                scale: 0.8,
+                y: 50,
+                rotationX: -30,
+                autoAlpha: 0, // Use autoAlpha for better performance
+                stagger: 0.1,
+                ease: "power3.out",
+              });
+              
+              // Animate the bloom effect on top
+              gsap.fromTo(".bloom-effect", 
+                { scale: 0.5, autoAlpha: 0.7 },
+                {
+                  duration: 0.8,
+                  scale: 2.5,
+                  autoAlpha: 0,
+                  stagger: 0.1,
+                  ease: "power2.inOut",
+                  delay: 0.1,
+                }
+              );
+            }
+            // Once animated, we don't need to watch it anymore
+            observer.disconnect();
+          }
+        },
+        { rootMargin: "0px 0px -20% 0px", threshold: 0 }
+      );
+
+      if (galleryElement) {
+        observer.observe(galleryElement);
       }
-    );
+      
+      return () => {
+        if (galleryElement) {
+            observer.disconnect();
+        }
+      }
+    }, galleryRef);
 
-    observer.observe(galleryElement);
-
-    return () => {
-      // Cleanup on component unmount
-      observer.disconnect();
-      ctx.revert();
-    };
+    // Cleanup function that runs when component unmounts
+    return () => ctx.revert();
   }, []);
 
   const openLightbox = (imgSrc: string) => {
@@ -102,13 +126,18 @@ const Gallery: React.FC = () => {
       <div ref={galleryRef} className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
         {placeholderImages.map((src, index) => (
           <div key={index} className="gallery-item break-inside-avoid" style={{ perspective: '1000px' }}>
-            <img
-              src={src}
-              alt={`Wedding memory ${index + 1}`}
-              className="w-full h-auto object-cover rounded-lg shadow-lg cursor-pointer transform hover:scale-105 transition-transform duration-300"
+             <div
+              className="relative rounded-lg shadow-lg cursor-pointer group overflow-hidden"
               onClick={() => openLightbox(src)}
-              loading="lazy"
-            />
+            >
+              <div className="bloom-effect absolute inset-0 z-10 origin-center bg-[radial-gradient(circle,rgba(255,213,79,0.5)_0%,rgba(255,213,79,0)_70%)] pointer-events-none" />
+              <img
+                src={src}
+                alt={`Wedding memory ${index + 1}`}
+                className="w-full h-auto object-cover block transform transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+              />
+            </div>
           </div>
         ))}
       </div>
