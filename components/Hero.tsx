@@ -14,7 +14,7 @@ const Hero: React.FC = () => {
     <section className="flex flex-col items-center text-center py-10">
       <p className="font-serif text-gold-700 text-lg mb-2">We're Getting Married!</p>
       <h1 className="font-serif text-5xl md:text-7xl text-navy-900 font-bold">
-        {config.brideName} &amp; {config.groomName}
+        {config.groomName} &amp; {config.brideName}
       </h1>
       <p className="mt-4 text-lg text-navy-700 max-w-2xl">
         With joyful hearts, we invite you to celebrate our wedding. Your presence would be the greatest gift as we begin our new life together.
@@ -41,9 +41,9 @@ const Hero: React.FC = () => {
                 <div className="relative text-center">
                     <p className="font-serif text-gold-700 text-2xl">Together with their families</p>
                     <h2 className="font-serif text-6xl my-6 text-navy-900">
-                        {config.brideName}
-                        <span className="block text-3xl font-sans font-light my-2">&amp;</span>
                         {config.groomName}
+                        <span className="block text-3xl font-sans font-light my-2">&amp;</span>
+                        {config.brideName}
                     </h2>
                     <p className="text-navy-700 text-lg">{config.date}</p>
                     <p className="text-navy-700 mt-1">{config.time}</p>
