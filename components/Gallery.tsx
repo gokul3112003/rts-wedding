@@ -1,27 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+import { config } from '../config';
 
 // =================================================================
 // NOTE FOR DEVELOPER:
-// This gallery uses placeholder images. To populate it with real photos from Google Drive,
-// you would need a server-side component (e.g., a Node.js script using the Google Drive API)
-// to fetch the image URLs and provide them as a JSON endpoint.
-// The static site would then fetch this JSON and populate the 'images' array.
-// For now, we use placeholders to demonstrate the layout and animations.
+// This gallery is populated from the `galleryPhotoUrls` array in `config.ts`.
+// To add your own photos, please follow the instructions in that file
+// to get direct image links from your Google Photos album.
 // =================================================================
-
-const placeholderImages = [
-  'https://picsum.photos/id/10/800/1200',
-  'https://picsum.photos/id/20/800/600',
-  'https://picsum.photos/id/30/1200/800',
-  'https://picsum.photos/id/45/800/1000',
-  'https://picsum.photos/id/55/800/600',
-  'https://picsum.photos/id/65/1000/800',
-  'https://picsum.photos/id/75/800/1200',
-  'https://picsum.photos/id/85/800/600',
-  'https://picsum.photos/id/95/1200/800',
-];
-
 
 const Gallery: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -39,36 +25,42 @@ const Gallery: React.FC = () => {
         (entries) => {
           if (entries[0].isIntersecting) {
             if (prefersReducedMotion) {
-              // Accessible, simple fade-in animation
+              // Accessible, simple fade-in animation for users who prefer reduced motion
               gsap.from(".gallery-item", {
                 duration: 1.2,
-                autoAlpha: 0, // Fades in and handles visibility
+                autoAlpha: 0,
                 stagger: 0.15,
                 ease: "power2.out",
               });
             } else {
-              // Enhanced 3D animation with bloom effect
-              // Animate the container for the 3D effect
+              // Enhanced 3D animation with a playful entrance
               gsap.from(".gallery-item", {
-                duration: 1.2,
-                scale: 0.8,
-                y: 50,
-                rotationX: -30,
-                autoAlpha: 0, // Use autoAlpha for better performance
-                stagger: 0.1,
-                ease: "power3.out",
+                duration: 1.5,
+                scale: 0.7,
+                y: 80,
+                rotationZ: -10,
+                rotationX: 45,
+                autoAlpha: 0,
+                stagger: {
+                  each: 0.1,
+                  from: "start",
+                },
+                ease: "power4.out",
               });
               
               // Animate the bloom effect on top
               gsap.fromTo(".bloom-effect", 
-                { scale: 0.5, autoAlpha: 0.7 },
+                { scale: 0.3, autoAlpha: 0.8 },
                 {
-                  duration: 0.8,
-                  scale: 2.5,
+                  duration: 1.0,
+                  scale: 3.0,
                   autoAlpha: 0,
-                  stagger: 0.1,
-                  ease: "power2.inOut",
-                  delay: 0.1,
+                  stagger: {
+                    each: 0.1,
+                    from: "start",
+                  },
+                  ease: "expo.in",
+                  delay: 0.2,
                 }
               );
             }
@@ -124,7 +116,7 @@ const Gallery: React.FC = () => {
       </p>
 
       <div ref={galleryRef} className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-        {placeholderImages.map((src, index) => (
+        {config.galleryPhotoUrls.map((src, index) => (
           <div key={index} className="gallery-item break-inside-avoid" style={{ perspective: '1000px' }}>
              <div
               className="relative rounded-lg shadow-lg cursor-pointer group overflow-hidden"

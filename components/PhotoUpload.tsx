@@ -3,13 +3,26 @@ import React from 'react';
 import { config } from '../config';
 import { CameraIcon } from './icons';
 
-// QR Code SVG generated for the link: https://drive.google.com/drive/folders/1drvothbMrm8RujMARwxZIuUKkiGvovOW?usp=sharing
-const QrCodeSvg: React.FC = () => (
-  <svg width="200" height="200" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" className="mx-auto">
-    <path fill="#0D133C" d="M128 0h128v128h-128zM0 0h128v128h-128zM0 128h128v128h-128z" />
-    <path fill="#FDFBF5" d="M32 32h64v64h-64zM160 32h64v64h-64zM32 160h64v64h-64zM240 240v-48h-16v32h-32v16zM128 128h16v16h-16zM112 112h16v16h-16zM96 128h16v16h-16zM112 144h16v16h-16zM128 160h16v16h-16zM144 144h16v16h-16zM160 128h16v16h-16zM144 112h16v16h-16zM128 224h16v16h-16zM112 208h16v16h-16zM96 224h16v16h-16zM112 240h16v16h-16zM160 224h16v16h-16zM144 208h16v16h-16zM176 208h16v16h-16zM192 224h16v16h-16zM176 240h16v16h-16zM208 192h16v16h-16zM224 176h16v16h-16zM208 160h16v16h-16zM192 144h16v16h-16zM208 128h16v16h-16zM192 112h16v16h-16zM176 128h16v16h-16zM144 176h16v16h-16zM128 192h16v16h-16zM160 160h16v16h-16z" />
-  </svg>
-);
+const QrCode: React.FC<{ url: string }> = ({ url }) => {
+  // Use a free public API to generate the QR code image dynamically.
+  // This ensures the QR code always matches the URL in the config file.
+  // Colors are customized to match the website's theme for a cohesive look.
+  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
+    url
+  )}&size=200x200&bgcolor=ffffff&color=0D133C&margin=10`;
+
+  return (
+    <img
+      src={qrApiUrl}
+      alt="QR Code for photo upload"
+      width="200"
+      height="200"
+      className="mx-auto"
+      aria-label="Scan to upload photos"
+    />
+  );
+};
+
 
 const PhotoUpload: React.FC = () => {
   return (
@@ -20,7 +33,7 @@ const PhotoUpload: React.FC = () => {
       </p>
       <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
         <div className="p-4 bg-white rounded-lg shadow-lg">
-          <QrCodeSvg />
+          <QrCode url={config.googleDriveUploadUrl} />
         </div>
         <div className="text-left max-w-sm">
           <div className="flex items-center text-2xl font-bold text-navy-800 mb-4">

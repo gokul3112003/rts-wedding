@@ -1,4 +1,3 @@
-
 // =================================================================
 // EDIT YOUR WEDDING DETAILS HERE
 // This file acts as a simple "Content Management System".
@@ -8,7 +7,7 @@
 export const config = {
   // The couple's names
   groomName: "Tamil Selvan",
-  brideName: "Santhini",
+  brideName: "Shanthini",
   
   // Wedding date and time
   date: "Friday, February 6, 2026",
@@ -36,4 +35,27 @@ export const config = {
 
   // Optional: A contact email for photo submission issues
   contactEmail: "couple@example.com",
+
+  // =================================================================
+  // PHOTO GALLERY
+  // Instructions:
+  // 1. Go to your shared Google Photos album.
+  // 2. Click on a photo to open it in the full-screen viewer.
+  // 3. Right-click on the photo and select "Copy Image Address".
+  // 4. Paste the URL into the list below, wrapped in quotes ''.
+  // 5. Add a comma after each URL except the last one.
+  // NOTE: This method is the simplest for a static site but may
+  // occasionally require updating links if they change.
+  // =================================================================
+  galleryPhotoUrls: [
+    'https://picsum.photos/id/10/800/1200',
+    'https://picsum.photos/id/20/800/600',
+    'https://picsum.photos/id/30/1200/800',
+    'https://picsum.photos/id/45/800/1000',
+    'https://picsum.photos/id/55/800/600',
+    'https://picsum.photos/id/65/1000/800',
+    'https://picsum.photos/id/75/800/1200',
+    'https://picsum.photos/id/85/800/600',
+    'https://picsum.photos/id/95/1200/800',
+  ],
 };
